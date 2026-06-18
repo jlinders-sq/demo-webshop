@@ -1,0 +1,8 @@
+{
+  "name": "demo-webshop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes http-server -p 8000"
+  }
+}
