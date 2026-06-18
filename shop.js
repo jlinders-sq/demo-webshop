@@ -1,15 +1,97 @@
 const PRODUCTS = {
-  apple: { name: "Apple", emoji: "🍏" },
-  banana: { name: "Banana", emoji: "🍌" },
-  lemon: { name: "Lemon", emoji: "🍋" },
-  cucumber: { name: "Cucumber", emoji: "🥒" },
-  avocado: { name: "Avocado", emoji: "🥑" },
-  tomato: { name: "Tomato", emoji: "🍅" },
-  potato: { name: "Potato", emoji: "🥔" },
+  apple: {
+    name: "Apple",
+    emoji: "🍏",
+    price: 1.6,
+    category: "Fruit",
+    description: "Fresh and crisp for everyday snacking.",
+    allergens: [],
+  },
+  banana: {
+    name: "Banana",
+    emoji: "🍌",
+    price: 1.2,
+    category: "Fruit",
+    description: "Naturally sweet and easy to enjoy.",
+    allergens: [],
+  },
+  lemon: {
+    name: "Lemon",
+    emoji: "🍋",
+    price: 1.0,
+    category: "Fruit",
+    description: "Bright and zesty for drinks and recipes.",
+    allergens: [],
+  },
+  cucumber: {
+    name: "Cucumber",
+    emoji: "🥒",
+    price: 1.4,
+    category: "Vegetable",
+    description: "Cool, crunchy, and refreshing.",
+    allergens: [],
+  },
+  avocado: {
+    name: "Avocado",
+    emoji: "🥑",
+    price: 2.0,
+    category: "Vegetable",
+    description: "Smooth, creamy, and full of good fats.",
+    allergens: [],
+  },
+  tomato: {
+    name: "Tomato",
+    emoji: "🍅",
+    price: 1.3,
+    category: "Vegetable",
+    description: "A juicy staple for salads and cooking.",
+    allergens: [],
+  },
+  potato: {
+    name: "Potato",
+    emoji: "🥔",
+    price: 0.9,
+    category: "Vegetable",
+    description: "A versatile pantry favorite.",
+    allergens: [],
+  },
+};
+
+const GIFT_BOXES = {
+  "vitamine-c-box": {
+    name: "Vitamine C Box",
+    emoji: "🎁",
+    description: "A bright assortment designed for an extra vitamin boost.",
+    price: 5.8,
+    category: "Gift Box",
+    contents: [
+      { id: "apple", quantity: 2 },
+      { id: "banana", quantity: 1 },
+      { id: "lemon", quantity: 1 },
+    ],
+    allergens: ["May contain traces of nuts"],
+  },
+  "kids-party-box": {
+    name: "Kids Party Box",
+    emoji: "🎉",
+    description: "A playful snack mix that is great for sharing.",
+    price: 6.2,
+    category: "Gift Box",
+    contents: [
+      { id: "banana", quantity: 2 },
+      { id: "apple", quantity: 1 },
+      { id: "lemon", quantity: 1 },
+    ],
+    allergens: ["May contain traces of nuts"],
+  },
 };
 
 const REQUEST_NOTE =
   "This is a requested item. We’ll review it before checkout.";
+
+function formatCurrency(amount) {
+  return `€${amount.toFixed(2)}`;
+}
 
 function getBasket() {
   try {
@@ -32,14 +114,23 @@ function normalizeBasketItem(item) {
     return { type: "product", id: item };
   }
   if (item && typeof item === "object") {
-    return item;
+    if (item.type === "request" || item.type === "product" || item.type === "gift-box") {
+      return item;
+    }
+    if (item.id && item.type === undefined && item.giftBox === true) {
+      return { type: "gift-box", id: item.id };
+    }
+    if (item.id) {
+      return { type: "product", id: item.id };
+    }
   }
   return null;
 }
 
 function addToBasket(product) {
   const basket = getBasket();
-  basket.push(product);
+  const normalized = normalizeBasketItem(product);
+  basket.push(normalized || product);
   setBasket(basket);
 }
 
@@ -57,6 +148,22 @@ function clearBasket() {
   localStorage.removeItem("basket");
 }
 
+function getGiftBoxAvailability(box) {
+  if (!box) {
+    return { available: false, note: "This gift box is temporarily unavailable." };
+  }
+
+  const missingItems = box.contents.filter((entry) => !PRODUCTS[entry.id]);
+  if (missingItems.length > 0) {
+    return {
+      available: false,
+      note: "This gift box is temporarily unavailable because one or more fruits are currently unavailable.",
+    };
+  }
+
+  return { available: true, note: "" };
+}
+
 function getBasketItemDisplay(item) {
   const normalized = normalizeBasketItem(item);
   if (!normalized) return null;
@@ -69,6 +176,38 @@ function getBasketItemDisplay(item) {
       note: REQUEST_NOTE,
       reference: normalized.reference || "",
       description: normalized.description || "",
+      price: null,
+      contents: "",
+      warnings: [],
+    };
+  }
+
+  if (normalized.type === "gift-box") {
+    const giftBox = GIFT_BOXES[normalized.id];
+    if (!giftBox) return null;
+
+    const availability = getGiftBoxAvailability(giftBox);
+    const warnings = Array.from(
+      new Set(
+        giftBox.contents
+          .flatMap((entry) => PRODUCTS[entry.id]?.allergens || [])
+          .concat(giftBox.allergens || [])
+      )
+    );
+
+    return {
+      kind: "gift-box",
+      title: giftBox.name,
+      emoji: giftBox.emoji,
+      note: availability.available ? "" : availability.note,
+      reference: "",
+      description: giftBox.description,
+      price: giftBox.price,
+      contents: giftBox.contents
+        .map((entry) => `${PRODUCTS[entry.id]?.name || entry.id} ×${entry.quantity}`)
+        .join(", "),
+      warnings,
+      isAvailable: availability.available,
     };
   }
 
@@ -81,8 +220,41 @@ function getBasketItemDisplay(item) {
     emoji: product.emoji,
     note: "",
     reference: "",
-    description: "",
+    description: product.description,
+    price: product.price,
+    contents: "",
+    warnings: product.allergens || [],
+    isAvailable: true,
   };
+}
+
+function getBasketItemPrice(item) {
+  const display = getBasketItemDisplay(item);
+  return display && display.price !== null ? display.price : 0;
+}
+
+function getBasketItemFruitCount(item) {
+  const normalized = normalizeBasketItem(item);
+  if (!normalized) return 0;
+  if (normalized.type === "gift-box") {
+    const giftBox = GIFT_BOXES[normalized.id];
+    if (!giftBox) return 0;
+    return giftBox.contents.reduce((sum, entry) => sum + entry.quantity, 0);
+  }
+  return 1;
+}
+
+function getBasketTotals() {
+  const basket = getBasket();
+  let total = 0;
+  let fruitCount = 0;
+
+  basket.forEach((item) => {
+    total += getBasketItemPrice(item);
+    fruitCount += getBasketItemFruitCount(item);
+  });
+
+  return { total, fruitCount };
 }
 
 function updateBasketItem(index, updates) {
@@ -158,6 +330,7 @@ function handleBasketClick(event) {
 function renderBasket() {
   const basket = getBasket();
   const basketList = document.getElementById("basketList");
+  const basketSummary = document.getElementById("basketSummary");
   const cartButtonsRow = document.querySelector(".cart-buttons-row");
   const clearBasketBtn = document.getElementById("clearBasket");
   const checkoutLink = document.getElementById("checkoutLink");
@@ -168,35 +341,57 @@ function renderBasket() {
     basketList.innerHTML = "<li>No products in basket.</li>";
   } else {
     basket.forEach((item, index) => {
-    const normalized = normalizeBasketItem(item);
-    const display = getBasketItemDisplay(normalized);
-    if (!display) return;
+      const normalized = normalizeBasketItem(item);
+      const display = getBasketItemDisplay(normalized);
+      if (!display) return;
 
-    const li = document.createElement("li");
-    li.className = display.kind === "request" ? "basket-item basket-item-request" : "basket-item";
+      const li = document.createElement("li");
+      li.className =
+        display.kind === "request"
+          ? "basket-item basket-item-request"
+          : display.kind === "gift-box"
+            ? "basket-item basket-item-gift"
+            : "basket-item";
 
-    const referenceMarkup = display.reference
-      ? `<a class="request-reference" href="${display.reference}" target="_blank" rel="noreferrer">Reference</a>`
-      : "";
+      const referenceMarkup = display.reference
+        ? `<a class="request-reference" href="${display.reference}" target="_blank" rel="noreferrer">Reference</a>`
+        : "";
+      const priceMarkup = display.price !== null && display.price !== undefined
+        ? `<span class="basket-item-price">${formatCurrency(display.price)}</span>`
+        : "";
+      const contentsMarkup = display.contents
+        ? `<span class="basket-item-list">Contents: ${display.contents}</span>`
+        : "";
+      const warningsMarkup = display.warnings && display.warnings.length > 0
+        ? `<span class="basket-item-warning">Allergy note: ${display.warnings.join(" • ")}</span>`
+        : "";
 
-    li.innerHTML = `
-      <div class="basket-item-content">
-        <span class="basket-emoji">${display.emoji}</span>
-        <div class="basket-item-text">
-          <span class="basket-item-title">${display.title}</span>
-          ${display.description ? `<span class="basket-item-description">${display.description}</span>` : ""}
-          ${referenceMarkup}
-          ${display.note ? `<span class="basket-notice">${display.note}</span>` : ""}
+      li.innerHTML = `
+        <div class="basket-item-content">
+          <span class="basket-emoji">${display.emoji}</span>
+          <div class="basket-item-text">
+            <span class="basket-item-title">${display.title}</span>
+            ${display.description ? `<span class="basket-item-description">${display.description}</span>` : ""}
+            ${contentsMarkup}
+            ${priceMarkup}
+            ${referenceMarkup}
+            ${warningsMarkup}
+            ${display.note ? `<span class="basket-notice">${display.note}</span>` : ""}
+          </div>
         </div>
-      </div>
-      <div class="basket-item-actions">
-        ${display.kind === "request" ? `<button type="button" data-action="edit" data-index="${index}" aria-label="Edit requested item">Edit</button>` : ""}
-        <button type="button" data-action="remove" data-index="${index}" aria-label="Remove item from basket">Remove</button>
-      </div>
-    `;
+        <div class="basket-item-actions">
+          ${display.kind === "request" ? `<button type="button" data-action="edit" data-index="${index}" aria-label="Edit requested item">Edit</button>` : ""}
+          <button type="button" data-action="remove" data-index="${index}" aria-label="Remove item from basket">Remove</button>
+        </div>
+      `;
 
       basketList.appendChild(li);
     });
+  }
+
+  if (basketSummary) {
+    const totals = getBasketTotals();
+    basketSummary.textContent = `Total items: ${totals.fruitCount} • Basket total: ${formatCurrency(totals.total)}`;
   }
 
   if (cartButtonsRow) {

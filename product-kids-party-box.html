@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kids Party Box - Fruit Shop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header role="banner">
+      <div class="header-center">
+        <a href="index.html" class="logo" aria-label="Go to homepage">
+          <img
+            src="img/fruit-shop-logo.png"
+            class="logo-img"
+            alt="Fruit Shop Logo"
+          />
+          <span class="products-text"> View Products </span>
+        </a>
+        <nav role="navigation" aria-label="Main navigation">
+          <a
+            href="basket.html"
+            class="basket-link"
+            aria-label="View shopping basket"
+          >
+            <img
+              src="img/basket-icon.png"
+              class="basket-img"
+              alt="Shopping basket icon"
+            />
+            <span class="basket-text">View shopping basket</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content" role="main">
+      <div class="content-box">
+        <div class="emoji-display" role="img" aria-label="Gift box emoji">🎉</div>
+        <h1 id="giftBoxName">Kids Party Box</h1>
+        <div class="product-desc" id="giftBoxDescription" aria-label="Gift box description"></div>
+        <div class="product-desc" id="giftBoxContents" aria-label="Gift box contents"></div>
+        <div class="product-desc" id="giftBoxPrice" aria-label="Gift box total price"></div>
+        <div class="product-desc" id="giftBoxWarnings" aria-label="Gift box allergy notes"></div>
+        <div class="button-container">
+          <button
+            id="addToBasket"
+            class="cart-action-btn"
+            aria-label="Add Kids Party Box to basket"
+          >
+            Add to Basket
+          </button>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a
+        href="https://www.linkedin.com/in/timlolkema/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        By Tim Lolkema
+      </a>
+    </footer>
+    <script src="shop.js"></script>
+    <script>
+      const giftBoxId = "kids-party-box";
+      const giftBox = GIFT_BOXES[giftBoxId];
+      const addButton = document.getElementById("addToBasket");
+      const giftBoxName = document.getElementById("giftBoxName");
+      const giftBoxDescription = document.getElementById("giftBoxDescription");
+      const giftBoxContents = document.getElementById("giftBoxContents");
+      const giftBoxPrice = document.getElementById("giftBoxPrice");
+      const giftBoxWarnings = document.getElementById("giftBoxWarnings");
+
+      if (giftBox) {
+        const contentsText = giftBox.contents
+          .map((entry) => `${PRODUCTS[entry.id]?.name || entry.id} ×${entry.quantity}`)
+          .join(", ");
+        const warnings = (giftBox.allergens || []).join(" • ");
+        const availability = getGiftBoxAvailability(giftBox);
+
+        giftBoxName.textContent = giftBox.name;
+        giftBoxDescription.textContent = giftBox.description;
+        giftBoxContents.textContent = `Contents: ${contentsText}`;
+        giftBoxPrice.textContent = `Total price: ${formatCurrency(giftBox.price)}`;
+        giftBoxWarnings.textContent = warnings
+          ? `Allergy warnings: ${warnings}`
+          : "";
+
+        if (!availability.available) {
+          addButton.disabled = true;
+          addButton.textContent = "Temporarily unavailable";
+          giftBoxWarnings.textContent = availability.note;
+        } else {
+          addButton.onclick = function () {
+            addToBasket({ type: "gift-box", id: giftBoxId });
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
