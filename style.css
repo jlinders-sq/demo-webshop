@@ -159,8 +159,7 @@ textarea:focus {
 .logo-img {
   height: 300px;
   margin-right: 1rem;
-  vertical-align: middle;
-  display: inline-block;
+  display: block;
 }
 .basket-link {
   display: flex;
@@ -177,15 +176,15 @@ textarea:focus {
 }
 
 .products-text {
-  display: block;
+  display: flex;
   align-items: center;
+  justify-content: center;
   margin-top: 0.5rem;
   font-size: 1.5rem;
 }
 
 .basket-img {
   height: 300px;
-  vertical-align: middle;
   display: block;
 }
 .products-title {
@@ -298,8 +297,9 @@ textarea:focus {
 }
 .basket-emoji {
   font-size: 2.5rem;
-  vertical-align: middle;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 0.5rem;
 }
 #basketList li {
