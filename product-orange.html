@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fresh Orange - Fruit Shop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="nav-container">
+        <a href="index.html">
+          <img
+            src="img/fruit-shop-logo.png"
+            alt="Fruit Shop Logo"
+            class="logo"
+          />
+        </a>
+      </div>
+    </header>
+    <main id="main-content" role="main">
+      <div class="content-box">
+        <div class="emoji-display" role="img" aria-label="Orange emoji">🍊</div>
+        <h1>Orange</h1>
+        <div class="product-desc" aria-label="Product price">Price: €1.50</div>
+        <div class="product-desc" aria-label="Product description">
+          Oranges are highly nutritious because they are packed with essential vitamins such as vitamin C.
+        </div>
+        <div class="button-container">
+          <button
+            id="addToBasket"
+            class="cart-action-btn"
+            aria-label="Add Orange to basket"
+          >
+            Add to Basket
+          </button>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a
+        href="https://www.linkedin.com/in/timlolkema/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        By Tim Lolkema
+      </a>
+    </footer>
+    <script src="shop.js"></script>
+    <script>
+      document.getElementById("addToBasket").onclick = function () {
+        addToBasket("orange");
+      };
+    </script>
+  </body>
+</html>

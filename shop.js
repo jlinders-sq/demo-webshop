@@ -15,6 +15,14 @@ const PRODUCTS = {
     description: "Naturally sweet and easy to enjoy.",
     allergens: [],
   },
+  orange: {
+    name: "Orange",
+    emoji: "🍊",
+    price: 1.5,
+    category: "Fruit",
+    description: "Oranges are highly nutritious because they are packed with essential vitamins such as vitamin C.",
+    allergens: [],
+  },
   lemon: {
     name: "Lemon",
     emoji: "🍋",
