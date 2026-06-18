@@ -2,6 +2,10 @@ const PRODUCTS = {
   apple: { name: "Apple", emoji: "🍏" },
   banana: { name: "Banana", emoji: "🍌" },
   lemon: { name: "Lemon", emoji: "🍋" },
+  cucumber: { name: "Cucumber", emoji: "🥒" },
+  avocado: { name: "Avocado", emoji: "🥑" },
+  tomato: { name: "Tomato", emoji: "🍅" },
+  potato: { name: "Potato", emoji: "🥔" },
 };
 
 const REQUEST_NOTE =
