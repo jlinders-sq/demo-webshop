@@ -15,9 +15,10 @@
             class="logo-img"
             alt="Fruit Shop Logo"
           />
-          <span class="products-text"> View Products </span>
+          <span class="products-text">Home</span>
         </a>
         <nav role="navigation" aria-label="Main navigation">
+          <a href="products.html" class="nav-link">View Products</a>
           <a
             href="basket.html"
             class="basket-link"
@@ -34,110 +35,19 @@
       </div>
     </header>
     <main id="main-content" role="main">
-      <h1 class="products-title">Products</h1>
-
-      <h2 class="category-title">Fruits</h2>
-      <ul class="emoji-list" role="list" aria-label="Fruit product list">
-        <li>
-          <a
-            href="product-apple.html"
-            class="emoji-box"
-            aria-label="View Apple product details"
-            data-cart-add="apple"
-            data-cart-kind="product"
-            >🍏</a
-          >
-          <a href="product-apple.html" data-cart-add="apple" data-cart-kind="product">Go to Apple</a>
-        </li>
-        <li>
-          <a
-            href="product-banana.html"
-            class="emoji-box"
-            aria-label="View Banana product details"
-            data-cart-add="banana"
-            data-cart-kind="product"
-            >🍌</a
-          >
-          <a href="product-banana.html" data-cart-add="banana" data-cart-kind="product">Go to Banana</a>
-        </li>
-        <li>
-          <a
-            href="product-lemon.html"
-            class="emoji-box"
-            aria-label="View Lemon product details"
-            data-cart-add="lemon"
-            data-cart-kind="product"
-            >🍋</a
-          >
-          <a href="product-lemon.html" data-cart-add="lemon" data-cart-kind="product">Go to Lemon</a>
-        </li>
-      </ul>
-
-      <h2 class="category-title">Gift Box</h2>
-      <ul class="emoji-list" role="list" aria-label="Gift box product list">
-        <li>
-          <a
-            href="product-vitamine-c-box.html"
-            class="emoji-box"
-            aria-label="View Vitamine C Box product details"
-            data-cart-add="vitamine-c-box"
-            data-cart-kind="gift-box"
-            >🎁</a
-          >
-          <a href="product-vitamine-c-box.html" data-cart-add="vitamine-c-box" data-cart-kind="gift-box">Go to Vitamine C Box</a>
-        </li>
-        <li>
-          <a
-            href="product-kids-party-box.html"
-            class="emoji-box"
-            aria-label="View Kids Party Box product details"
-            data-cart-add="kids-party-box"
-            data-cart-kind="gift-box"
-            >🎉</a
-          >
-          <a href="product-kids-party-box.html" data-cart-add="kids-party-box" data-cart-kind="gift-box">Go to Kids Party Box</a>
-        </li>
-      </ul>
-
-      <h2 class="category-title">Vegetables</h2>
-      <ul class="emoji-list" role="list" aria-label="Vegetable product list">
-        <li>
-          <a
-            href="product-cucumber.html"
-            class="emoji-box"
-            aria-label="View Cucumber product details"
-            >🥒</a
-          >
-          <a href="product-cucumber.html">Go to Cucumber</a>
-        </li>
-        <li>
-          <a
-            href="product-avocado.html"
-            class="emoji-box"
-            aria-label="View Avocado product details"
-            >🥑</a
-          >
-          <a href="product-avocado.html">Go to Avocado</a>
-        </li>
-        <li>
-          <a
-            href="product-tomato.html"
-            class="emoji-box"
-            aria-label="View Tomato product details"
-            >🍅</a
-          >
-          <a href="product-tomato.html">Go to Tomato</a>
-        </li>
-        <li>
-          <a
-            href="product-potato.html"
-            class="emoji-box"
-            aria-label="View Potato product details"
-            >🥔</a
-          >
-          <a href="product-potato.html">Go to Potato</a>
-        </li>
-      </ul>
+      <section class="homepage-hero">
+        <h1 class="products-title">Fresh fruit for a healthier lifestyle</h1>
+        <p class="homepage-text">
+          Fruit is packed with vitamins, fiber, and natural energy that help support your health every day.
+        </p>
+        <p class="homepage-text">
+          You can also order our ready-made gift boxes for a convenient and delicious way to share fresh fruit.
+        </p>
+        <div class="homepage-actions">
+          <a href="products.html" class="homepage-button">Browse products</a>
+          <a href="basket.html" class="homepage-button secondary">Go to basket</a>
+        </div>
+      </section>
     </main>
     <footer>
       <a
@@ -149,22 +59,5 @@
       </a>
     </footer>
     <script src="shop.js"></script>
-    <script>
-      document.querySelectorAll('[data-cart-add]').forEach(function (link) {
-        link.addEventListener('click', function (event) {
-          const cartKind = link.getAttribute('data-cart-kind');
-          const cartId = link.getAttribute('data-cart-add');
-          if (!cartId) return;
-
-          if (cartKind === 'gift-box') {
-            addToBasket({ type: 'gift-box', id: cartId });
-          } else {
-            addToBasket(cartId);
-          }
-
-          event.preventDefault();
-        });
-      });
-    </script>
   </body>
 </html>

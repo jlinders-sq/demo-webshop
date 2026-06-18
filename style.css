@@ -45,6 +45,44 @@ main {
   border-radius: 0;
   box-shadow: none;
 }
+.homepage-hero {
+  max-width: 900px;
+  margin: 4rem auto;
+  padding: 3rem 2rem;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+.homepage-text {
+  font-size: 1.4rem;
+  line-height: 1.6;
+  margin: 1rem auto;
+  max-width: 700px;
+}
+.homepage-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.homepage-button {
+  display: inline-block;
+  background: linear-gradient(90deg, #ffe259 0%, #ffa751 100%);
+  color: #7a4c00;
+  border-radius: 999px;
+  padding: 0.8rem 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255, 167, 81, 0.12);
+}
+.homepage-button.secondary {
+  background: #eef6ff;
+  color: #0b5bd3;
+}
+.nav-link {
+  margin-right: 1.2rem;
+  font-size: 1.08rem;
+}
 .product-list {
   list-style: none;
   padding: 0;
