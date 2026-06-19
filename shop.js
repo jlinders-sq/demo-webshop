@@ -20,7 +20,7 @@ const PRODUCTS = {
     emoji: "🍊",
     price: 1.5,
     category: "Fruit",
-    description: "Oranges are highly nutritious because they are packed with essential vitamins such as vitamin C.",
+    description: "Your sweet and healthy friend.",
     allergens: [],
   },
   lemon: {
